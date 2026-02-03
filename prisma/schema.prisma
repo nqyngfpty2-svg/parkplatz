@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model ParkingSpot {
+  id            String        @id @default(cuid())
+  label         String        @unique
+  ownerCodeHash String
+  active        Boolean       @default(true)
+  releases      Release[]
+  reservations  Reservation[]
+}
+
+model Release {
+  id     String      @id @default(cuid())
+  spot   ParkingSpot @relation(fields: [spotId], references: [id])
+  spotId String
+  date   DateTime
+
+  @@unique([spotId, date])
+}
+
+model Reservation {
+  id              String      @id @default(cuid())
+  spot            ParkingSpot @relation(fields: [spotId], references: [id])
+  spotId          String
+  date            DateTime
+  cancelTokenHash String
+  createdAt       DateTime    @default(now())
+
+  @@unique([spotId, date])
+}
