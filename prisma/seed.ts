@@ -3,12 +3,10 @@ import { sha256 } from "../lib/hash";
 
 const prisma = new PrismaClient();
 
-function generateOwnerCode(label: string) {
   return sha256(label).slice(0, 4);
 }
 
 async function main() {
-  const spots = [] as { label: string; ownerCode: string }[];
   for (let index = 1; index <= 60; index += 1) {
     const label = `P-${String(index).padStart(2, "0")}`;
     const ownerCode = generateOwnerCode(label);
@@ -19,6 +17,7 @@ async function main() {
   const existingLabels = [] as string[];
 
   for (const spot of spots) {
+
         label: spot.label,
         ownerCodeHash: sha256(spot.ownerCode),
         active: true
