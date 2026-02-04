@@ -10,7 +10,7 @@ function generateOwnerCode() {
 
 async function main() {
   const spots = [] as { label: string; ownerCode: string }[];
-  for (let index = 1; index <= 20; index += 1) {
+  for (let index = 1; index <= 60; index += 1) {
     const label = `P-${String(index).padStart(2, "0")}`;
     const ownerCode = generateOwnerCode();
     spots.push({ label, ownerCode });
@@ -20,17 +20,6 @@ async function main() {
   const existingLabels = [] as string[];
 
   for (const spot of spots) {
-    const existingSpot = await prisma.parkingSpot.findUnique({
-      where: { label: spot.label }
-    });
-
-    if (existingSpot) {
-      existingLabels.push(spot.label);
-      continue;
-    }
-
-    await prisma.parkingSpot.create({
-      data: {
         label: spot.label,
         ownerCodeHash: sha256(spot.ownerCode),
         active: true
