@@ -1,18 +1,17 @@
 import { PrismaClient } from "@prisma/client";
-import crypto from "crypto";
 import { sha256 } from "../lib/hash";
 
 const prisma = new PrismaClient();
 
-function generateOwnerCode() {
-  return crypto.randomBytes(6).toString("hex");
+function generateOwnerCode(label: string) {
+  return sha256(label).slice(0, 4);
 }
 
 async function main() {
   const spots = [] as { label: string; ownerCode: string }[];
   for (let index = 1; index <= 60; index += 1) {
     const label = `P-${String(index).padStart(2, "0")}`;
-    const ownerCode = generateOwnerCode();
+    const ownerCode = generateOwnerCode(label);
     spots.push({ label, ownerCode });
   }
 
