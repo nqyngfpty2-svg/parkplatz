@@ -103,7 +103,7 @@ export default function BookingClient({ date, spots }: { date: string; spots: Sp
   return (
     <div className="grid">
       <div className="card">
-        <h2>Freie Spots am {date}</h2>
+        <h2>Freie Parkplätze am {date}</h2>
         {spots.length === 0 ? (
           <p className="alert">Keine freigegebenen Plätze verfügbar.</p>
         ) : (
