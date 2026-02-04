@@ -55,6 +55,7 @@ export default function BookingClient({ date, spots }: { date: string; spots: Sp
   const [seriesEnd, setSeriesEnd] = useState(date);
   const [seriesMode, setSeriesMode] = useState<"hard" | "soft">("hard");
   const [weekdays, setWeekdays] = useState<string[]>(["mon", "tue", "wed", "thu", "fri"]);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const availableLabels = useMemo(() => spots.map((spot) => spot.label), [spots]);
 
@@ -71,6 +72,7 @@ export default function BookingClient({ date, spots }: { date: string; spots: Sp
       setTokens(data.tokens);
       addTokens(data.tokens);
       setMessage("Buchung gespeichert. Bitte Cancel-Token sicher aufbewahren.");
+      setShowConfirmation(true);
     } else {
       setMessage(data.message ?? "Buchung fehlgeschlagen.");
     }
@@ -95,6 +97,7 @@ export default function BookingClient({ date, spots }: { date: string; spots: Sp
       setTokens(data.tokens);
       addTokens(data.tokens);
       setMessage("Serienbuchung verarbeitet. Tokens einmalig speichern.");
+      setShowConfirmation(true);
     } else {
       setMessage(data.message ?? "Serienbuchung fehlgeschlagen.");
     }
@@ -176,24 +179,34 @@ export default function BookingClient({ date, spots }: { date: string; spots: Sp
         <button onClick={handleSeriesReserve}>Serienbuchung anlegen</button>
       </div>
 
-      {message && <div className="alert success">{message}</div>}
-
-      {tokens.length > 0 && (
-        <div className="card">
-          <h3>Cancel-Tokens</h3>
-          <p>Nur jetzt sichtbar. Zusätzlich in diesem Browser gespeichert.</p>
-          <ul className="list">
-            {tokens.map((token) => (
-              <li key={`${token.spotLabel}-${token.date}`}>
-                <span className="badge">
-                  {token.spotLabel} am {token.date}
-                </span>
-                <div>
-                  <code>{token.token}</code>
-                </div>
-              </li>
-            ))}
-          </ul>
+      {showConfirmation && (
+        <div className="modal-overlay" role="dialog" aria-modal="true">
+          <div className="modal card">
+            <div className="modal-header">
+              <h3>Buchung erfolgreich</h3>
+              <button className="secondary" onClick={() => setShowConfirmation(false)}>
+                Schließen
+              </button>
+            </div>
+            {message && <p className="alert success">{message}</p>}
+            {tokens.length > 0 && (
+              <>
+                <p>Hier ist dein Stornierungscode. Nur jetzt sichtbar.</p>
+                <ul className="list">
+                  {tokens.map((token) => (
+                    <li key={`${token.spotLabel}-${token.date}`}>
+                      <span className="badge">
+                        {token.spotLabel} am {token.date}
+                      </span>
+                      <div>
+                        <code>{token.token}</code>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </div>
         </div>
       )}
     </div>
