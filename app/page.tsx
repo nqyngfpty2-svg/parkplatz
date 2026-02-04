@@ -28,10 +28,6 @@ export default async function Home({
     <div className="grid home-layout">
       <section className="card parking-plan-card">
         <h2>Parkplatzplan</h2>
-        <p>
-          Lege die Datei <code>public/parking-plan.pdf</code> ab, damit der Plan hier angezeigt
-          wird.
-        </p>
         <object
           data="/parking-plan.pdf"
           type="application/pdf"

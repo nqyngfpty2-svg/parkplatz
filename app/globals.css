@@ -158,6 +158,22 @@ button.secondary {
   gap: 12px;
 }
 
+.status {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #e8f5e9;
+  color: #256029;
+}
+
+.status.owner-cancelled,
+.status.missing,
+.status.unknown {
+  background: #fff3cd;
+  color: #856404;
+}
+
 .footer {
   margin-top: 32px;
   font-size: 12px;
