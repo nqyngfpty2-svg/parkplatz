@@ -16,7 +16,19 @@ async function main() {
     spots.push({ label, ownerCode });
   }
 
+  const createdSpots = [] as { label: string; ownerCode: string }[];
+  const existingLabels = [] as string[];
+
   for (const spot of spots) {
+    const existingSpot = await prisma.parkingSpot.findUnique({
+      where: { label: spot.label }
+    });
+
+    if (existingSpot) {
+      existingLabels.push(spot.label);
+      continue;
+    }
+
     await prisma.parkingSpot.create({
       data: {
         label: spot.label,
@@ -24,11 +36,19 @@ async function main() {
         active: true
       }
     });
+    createdSpots.push(spot);
   }
 
-  console.log("Owner-Codes (einmalig ausgeben, sicher verteilen):");
-  for (const spot of spots) {
-    console.log(`${spot.label}: ${spot.ownerCode}`);
+  if (createdSpots.length > 0) {
+    console.log("Owner-Codes (einmalig ausgeben, sicher verteilen):");
+    for (const spot of createdSpots) {
+      console.log(`${spot.label}: ${spot.ownerCode}`);
+    }
+  }
+
+  if (existingLabels.length > 0) {
+    console.log("Bereits vorhandene Parkplätze übersprungen:");
+    console.log(existingLabels.join(", "));
   }
 }
 
