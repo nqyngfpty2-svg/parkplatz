@@ -103,3 +103,117 @@ export async function POST(request: Request) {
     collisions: result.collisions
   });
 }
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const ownerCode = String(searchParams.get("ownerCode") ?? "").trim();
+  if (!ownerCode) {
+    return NextResponse.json({ ok: false, message: "Owner-Code fehlt." }, { status: 400 });
+  }
+
+  const ownerCodeHash = sha256(ownerCode);
+  const spot = await prisma.parkingSpot.findFirst({
+    where: { ownerCodeHash, active: true }
+  });
+
+  if (!spot) {
+    return NextResponse.json({ ok: false, message: "Owner-Code nicht gefunden." }, { status: 404 });
+  }
+
+  const releases = await prisma.release.findMany({
+    where: { spotId: spot.id },
+    orderBy: { date: "asc" }
+  });
+
+  return NextResponse.json({
+    ok: true,
+    message: "Freigaben geladen.",
+    dates: releases.map((release) => formatDateOnly(release.date))
+  });
+}
+
+export async function DELETE(request: Request) {
+  const body = await request.json();
+  const ownerCode = String(body.ownerCode ?? "").trim();
+  if (!ownerCode) {
+    return NextResponse.json({ ok: false, message: "Owner-Code fehlt." }, { status: 400 });
+  }
+
+  const ownerCodeHash = sha256(ownerCode);
+  const spot = await prisma.parkingSpot.findFirst({
+    where: { ownerCodeHash, active: true }
+  });
+
+  if (!spot) {
+    return NextResponse.json({ ok: false, message: "Owner-Code nicht gefunden." }, { status: 404 });
+  }
+
+  const missingDates: Date[] = [];
+  const removedDates: Date[] = [];
+
+  if (body.date) {
+    const date = parseDateOnly(body.date as string);
+    const existing = await prisma.release.findUnique({
+      where: {
+        spotId_date: {
+          spotId: spot.id,
+          date
+        }
+      }
+    });
+
+    if (!existing) {
+      missingDates.push(date);
+    } else {
+      await prisma.release.delete({ where: { id: existing.id } });
+      removedDates.push(date);
+    }
+
+    return NextResponse.json({
+      ok: true,
+      message: "Freigabe storniert.",
+      removedDates: removedDates.map(formatDateOnly),
+      missingDates: missingDates.map(formatDateOnly)
+    });
+  }
+
+  const startDate = body.startDate as string | undefined;
+  const endDate = body.endDate as string | undefined;
+  if (!startDate || !endDate || !body.weekdays) {
+    return NextResponse.json({ ok: false, message: "Seriendaten fehlen." }, { status: 400 });
+  }
+
+  const weekdays = parseWeekdays(body.weekdays as string[]);
+  const targetDates = enumerateSeriesDates(startDate, endDate, weekdays);
+
+  const existing = await prisma.release.findMany({
+    where: {
+      spotId: spot.id,
+      date: { in: targetDates }
+    }
+  });
+
+  const existingDates = new Set(existing.map((rel) => rel.date.getTime()));
+  targetDates.forEach((date) => {
+    if (existingDates.has(date.getTime())) {
+      removedDates.push(date);
+    } else {
+      missingDates.push(date);
+    }
+  });
+
+  if (existing.length > 0) {
+    await prisma.release.deleteMany({
+      where: {
+        id: { in: existing.map((rel) => rel.id) }
+      }
+    });
+  }
+
+  return NextResponse.json({
+    ok: true,
+    message: "Serie storniert.",
+    removedDates: removedDates.map(formatDateOnly),
+    missingDates: missingDates.map(formatDateOnly)
+  });
+}
