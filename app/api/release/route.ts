@@ -151,6 +151,29 @@ export async function DELETE(request: Request) {
   const missingDates: Date[] = [];
   const removedDates: Date[] = [];
 
+  if (body.all === true) {
+    const existing = await prisma.release.findMany({
+      where: { spotId: spot.id }
+    });
+    if (existing.length === 0) {
+      return NextResponse.json({
+        ok: true,
+        message: "Keine Freigaben gefunden.",
+        removedDates: []
+      });
+    }
+
+    await prisma.release.deleteMany({
+      where: { spotId: spot.id }
+    });
+
+    return NextResponse.json({
+      ok: true,
+      message: "Alle Freigaben storniert.",
+      removedDates: existing.map((rel) => formatDateOnly(rel.date))
+    });
+  }
+
   if (body.date) {
     const date = parseDateOnly(body.date as string);
     const existing = await prisma.release.findUnique({

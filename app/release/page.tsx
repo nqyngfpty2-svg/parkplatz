@@ -117,6 +117,22 @@ export default function ReleasePage() {
     }
   };
 
+  const handleCancelAllLoaded = async () => {
+    setCancelResult(null);
+    setResult(null);
+    setLoadResult(null);
+    const response = await fetch("/api/release", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ownerCode, all: true })
+    });
+    const data = (await response.json()) as CancelResponse;
+    setCancelResult(data);
+    if (data.ok) {
+      setLoadedReleases([]);
+    }
+  };
+
   return (
     <div className="grid">
       <section className="card">
@@ -194,16 +210,21 @@ export default function ReleasePage() {
         {loadedReleases.length === 0 ? (
           <p>Noch keine Freigaben geladen.</p>
         ) : (
-          <ul className="list">
-            {loadedReleases.map((date) => (
-              <li key={date} className="list-item">
-                <span>{date}</span>
-                <button className="secondary" onClick={() => handleLoadedCancel(date)}>
-                  Stornieren
-                </button>
-              </li>
-            ))}
-          </ul>
+          <div className="stack">
+            <button className="secondary" onClick={handleCancelAllLoaded}>
+              Alle stornieren
+            </button>
+            <ul className="list">
+              {loadedReleases.map((date) => (
+                <li key={date} className="list-item">
+                  <span>{date}</span>
+                  <button className="secondary" onClick={() => handleLoadedCancel(date)}>
+                    Stornieren
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </section>
 
