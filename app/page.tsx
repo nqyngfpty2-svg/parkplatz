@@ -25,8 +25,8 @@ export default async function Home({
     .map((release) => ({ id: release.spotId, label: release.spot.label }));
 
   return (
-    <div className="grid">
-      <section className="card">
+    <div className="grid home-layout">
+      <section className="card parking-plan-card">
         <h2>Parkplatzplan</h2>
         <p>
           Lege die Datei <code>public/parking-plan.pdf</code> ab, damit der Plan hier angezeigt
@@ -44,19 +44,21 @@ export default async function Home({
           </p>
         </object>
       </section>
-      <section className="card">
-        <h2>Datum auswählen</h2>
-        <form method="get" className="grid two">
-          <label>
-            Datum
-            <input type="date" name="date" defaultValue={selectedDate} />
-          </label>
-          <button type="submit">Anzeigen</button>
-        </form>
-      </section>
+      <div className="home-left">
+        <section className="card">
+          <h2>Datum auswählen</h2>
+          <form method="get" className="grid two">
+            <label>
+              Datum
+              <input type="date" name="date" defaultValue={selectedDate} />
+            </label>
+            <button type="submit">Anzeigen</button>
+          </form>
+        </section>
 
-      <BookingClient date={selectedDate} spots={availableSpots} />
-      <MyReservations />
+        <BookingClient date={selectedDate} spots={availableSpots} />
+        <MyReservations />
+      </div>
     </div>
   );
 }

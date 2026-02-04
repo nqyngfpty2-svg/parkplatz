@@ -86,6 +86,30 @@ button.secondary {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
+.home-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+}
+
+.home-left {
+  display: grid;
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .home-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .parking-plan-card {
+    order: 2;
+  }
+
+  .home-left {
+    order: 1;
+  }
+}
+
 .badge {
   display: inline-flex;
   align-items: center;
