@@ -27,6 +27,24 @@ export default async function Home({
   return (
     <div className="grid">
       <section className="card">
+        <h2>Parkplatzplan</h2>
+        <p>
+          Lege die Datei <code>public/parking-plan.pdf</code> ab, damit der Plan hier angezeigt
+          wird.
+        </p>
+        <object
+          data="/parking-plan.pdf"
+          type="application/pdf"
+          className="parking-plan"
+          aria-label="Parkplatzplan als PDF"
+        >
+          <p>
+            PDF konnte nicht geladen werden. Bitte öffne den{" "}
+            <a href="/parking-plan.pdf">Parkplatzplan als PDF</a>.
+          </p>
+        </object>
+      </section>
+      <section className="card">
         <h2>Datum auswählen</h2>
         <form method="get" className="grid two">
           <label>
