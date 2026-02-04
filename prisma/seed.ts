@@ -17,8 +17,6 @@ async function main() {
   }
 
   for (const spot of spots) {
-    await prisma.parkingSpot.create({
-      data: {
         label: spot.label,
         ownerCodeHash: sha256(spot.ownerCode),
         active: true
