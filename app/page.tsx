@@ -28,13 +28,23 @@ export default async function Home({
     <div className="grid home-layout">
       <section className="card parking-plan-card">
         <h2>Parkplatzplan</h2>
-        <img
-          src="/parking-plan.svg"
-          className="parking-plan"
-          alt="Parkplatzplan als Grafik"
-        />
+        <div className="parking-plan-frame">
+          <a
+            className="parking-plan-link"
+            href="/parking-plan.svg"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <img
+              src="/parking-plan.svg"
+              className="parking-plan"
+              alt="Parkplatzplan als Grafik"
+            />
+          </a>
+        </div>
         <p className="parking-plan-fallback">
-          Falls das Bild nicht angezeigt wird, öffne den{" "}
+          Zum Zoomen auf das Bild klicken (öffnet in neuem Tab). Falls das Bild
+          nicht angezeigt wird, öffne den{" "}
           <a href="/parking-plan.pdf" target="_blank" rel="noreferrer">
             Parkplatzplan als PDF
           </a>
