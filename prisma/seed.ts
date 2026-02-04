@@ -17,13 +17,6 @@ async function main() {
   }
 
   for (const spot of spots) {
-    await prisma.parkingSpot.upsert({
-      where: { label: spot.label },
-      update: {
-        ownerCodeHash: sha256(spot.ownerCode),
-        active: true
-      },
-      create: {
         label: spot.label,
         ownerCodeHash: sha256(spot.ownerCode),
         active: true
