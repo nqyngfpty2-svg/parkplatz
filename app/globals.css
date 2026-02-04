@@ -42,11 +42,22 @@ body {
   margin-bottom: 16px;
 }
 
-.parking-plan {
-  width: 100%;
-  height: min(70vh, 720px);
+.parking-plan-frame {
+  max-height: min(70vh, 720px);
+  overflow: auto;
   border: 1px solid #e2e2e2;
   border-radius: 8px;
+}
+
+.parking-plan-link {
+  display: block;
+}
+
+.parking-plan {
+  width: 1200px;
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
 label {

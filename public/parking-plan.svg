@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">Parkplatzplan</title>
+  <desc id="desc">Ein schematischer Parkplatzplan mit markierten Stellflächen.</desc>
+  <rect width="1200" height="800" fill="#f4f4f4" stroke="#9a9a9a" stroke-width="4" />
+  <g fill="#c8e6ff" stroke="#7aaad9" stroke-width="3">
+    <rect x="80" y="120" width="140" height="80" rx="6" />
+    <rect x="240" y="120" width="140" height="80" rx="6" />
+    <rect x="400" y="120" width="140" height="80" rx="6" />
+    <rect x="560" y="120" width="140" height="80" rx="6" />
+    <rect x="720" y="120" width="140" height="80" rx="6" />
+    <rect x="880" y="120" width="140" height="80" rx="6" />
+
+    <rect x="80" y="220" width="140" height="80" rx="6" />
+    <rect x="240" y="220" width="140" height="80" rx="6" />
+    <rect x="400" y="220" width="140" height="80" rx="6" />
+    <rect x="560" y="220" width="140" height="80" rx="6" />
+    <rect x="720" y="220" width="140" height="80" rx="6" />
+    <rect x="880" y="220" width="140" height="80" rx="6" />
+
+    <rect x="80" y="320" width="140" height="80" rx="6" />
+    <rect x="240" y="320" width="140" height="80" rx="6" />
+    <rect x="400" y="320" width="140" height="80" rx="6" />
+    <rect x="560" y="320" width="140" height="80" rx="6" />
+    <rect x="720" y="320" width="140" height="80" rx="6" />
+    <rect x="880" y="320" width="140" height="80" rx="6" />
+
+    <rect x="80" y="420" width="140" height="80" rx="6" />
+    <rect x="240" y="420" width="140" height="80" rx="6" />
+    <rect x="400" y="420" width="140" height="80" rx="6" />
+    <rect x="560" y="420" width="140" height="80" rx="6" />
+    <rect x="720" y="420" width="140" height="80" rx="6" />
+    <rect x="880" y="420" width="140" height="80" rx="6" />
+  </g>
+  <text x="80" y="560" font-family="Arial, sans-serif" font-size="32" fill="#4a4a4a">
+    Parkplatzplan – Beispielgrafik (PNG/Binary nicht unterstützt)
+  </text>
+</svg>
