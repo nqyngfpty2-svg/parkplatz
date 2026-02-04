@@ -16,6 +16,12 @@ type CancelResponse = {
   message?: string;
 };
 
+type LoadResponse = {
+  ok: boolean;
+  dates?: string[];
+  message?: string;
+};
+
 export default function ReleasePage() {
   const [ownerCode, setOwnerCode] = useState("");
   const [singleDate, setSingleDate] = useState("");
@@ -25,10 +31,13 @@ export default function ReleasePage() {
   const [mode, setMode] = useState<"hard" | "soft">("hard");
   const [result, setResult] = useState<ReleaseResponse | null>(null);
   const [cancelResult, setCancelResult] = useState<CancelResponse | null>(null);
+  const [loadResult, setLoadResult] = useState<LoadResponse | null>(null);
+  const [loadedReleases, setLoadedReleases] = useState<string[]>([]);
 
   const handleSingleRelease = async () => {
     setResult(null);
     setCancelResult(null);
+    setLoadResult(null);
     const response = await fetch("/api/release", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -40,6 +49,7 @@ export default function ReleasePage() {
   const handleSeriesRelease = async () => {
     setResult(null);
     setCancelResult(null);
+    setLoadResult(null);
     const response = await fetch("/api/release", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -51,23 +61,60 @@ export default function ReleasePage() {
   const handleSingleCancel = async () => {
     setCancelResult(null);
     setResult(null);
+    setLoadResult(null);
     const response = await fetch("/api/release", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ownerCode, date: singleDate })
     });
-    setCancelResult((await response.json()) as CancelResponse);
+    const data = (await response.json()) as CancelResponse;
+    setCancelResult(data);
+    if (data.removedDates && data.removedDates.length > 0) {
+      setLoadedReleases((prev) => prev.filter((date) => !data.removedDates?.includes(date)));
+    }
   };
 
   const handleSeriesCancel = async () => {
     setCancelResult(null);
     setResult(null);
+    setLoadResult(null);
     const response = await fetch("/api/release", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ownerCode, startDate: seriesStart, endDate: seriesEnd, weekdays })
     });
-    setCancelResult((await response.json()) as CancelResponse);
+    const data = (await response.json()) as CancelResponse;
+    setCancelResult(data);
+    if (data.removedDates && data.removedDates.length > 0) {
+      setLoadedReleases((prev) => prev.filter((date) => !data.removedDates?.includes(date)));
+    }
+  };
+
+  const handleLoadReleases = async () => {
+    setLoadResult(null);
+    setResult(null);
+    setCancelResult(null);
+    const params = new URLSearchParams({ ownerCode });
+    const response = await fetch(`/api/release?${params.toString()}`);
+    const data = (await response.json()) as LoadResponse;
+    setLoadResult(data);
+    setLoadedReleases(data.dates ?? []);
+  };
+
+  const handleLoadedCancel = async (date: string) => {
+    setCancelResult(null);
+    setResult(null);
+    setLoadResult(null);
+    const response = await fetch("/api/release", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ownerCode, date })
+    });
+    const data = (await response.json()) as CancelResponse;
+    setCancelResult(data);
+    if (data.removedDates && data.removedDates.length > 0) {
+      setLoadedReleases((prev) => prev.filter((release) => !data.removedDates?.includes(release)));
+    }
   };
 
   return (
@@ -86,6 +133,7 @@ export default function ReleasePage() {
             <option value="soft">Soft (Freigabe was geht)</option>
           </select>
         </label>
+        <button onClick={handleLoadReleases}>Freigaben laden</button>
       </section>
 
       <section className="card">
@@ -138,6 +186,25 @@ export default function ReleasePage() {
             Serie stornieren
           </button>
         </div>
+      </section>
+
+      <section className="card">
+        <h3>Bestehende Freigaben</h3>
+        {loadResult && <p>{loadResult.message}</p>}
+        {loadedReleases.length === 0 ? (
+          <p>Noch keine Freigaben geladen.</p>
+        ) : (
+          <ul className="list">
+            {loadedReleases.map((date) => (
+              <li key={date} className="list-item">
+                <span>{date}</span>
+                <button className="secondary" onClick={() => handleLoadedCancel(date)}>
+                  Stornieren
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       {result && (

@@ -151,6 +151,13 @@ button.secondary {
   border-bottom: 1px solid #eee;
 }
 
+.list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .footer {
   margin-top: 32px;
   font-size: 12px;

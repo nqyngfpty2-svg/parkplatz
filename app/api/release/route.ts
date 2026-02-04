@@ -104,6 +104,34 @@ export async function POST(request: Request) {
   });
 }
 
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const ownerCode = String(searchParams.get("ownerCode") ?? "").trim();
+  if (!ownerCode) {
+    return NextResponse.json({ ok: false, message: "Owner-Code fehlt." }, { status: 400 });
+  }
+
+  const ownerCodeHash = sha256(ownerCode);
+  const spot = await prisma.parkingSpot.findFirst({
+    where: { ownerCodeHash, active: true }
+  });
+
+  if (!spot) {
+    return NextResponse.json({ ok: false, message: "Owner-Code nicht gefunden." }, { status: 404 });
+  }
+
+  const releases = await prisma.release.findMany({
+    where: { spotId: spot.id },
+    orderBy: { date: "asc" }
+  });
+
+  return NextResponse.json({
+    ok: true,
+    message: "Freigaben geladen.",
+    dates: releases.map((release) => formatDateOnly(release.date))
+  });
+}
+
 export async function DELETE(request: Request) {
   const body = await request.json();
   const ownerCode = String(body.ownerCode ?? "").trim();
