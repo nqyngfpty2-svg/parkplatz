@@ -28,17 +28,18 @@ export default async function Home({
     <div className="grid home-layout">
       <section className="card parking-plan-card">
         <h2>Parkplatzplan</h2>
-        <object
-          data="/parking-plan.pdf"
-          type="application/pdf"
+        <iframe
+          src="/parking-plan.pdf"
           className="parking-plan"
-          aria-label="Parkplatzplan als PDF"
-        >
-          <p>
-            PDF konnte nicht geladen werden. Bitte öffne den{" "}
-            <a href="/parking-plan.pdf">Parkplatzplan als PDF</a>.
-          </p>
-        </object>
+          title="Parkplatzplan als PDF"
+        />
+        <p className="parking-plan-fallback">
+          PDF konnte nicht geladen werden. Bitte öffne den{" "}
+          <a href="/parking-plan.pdf" target="_blank" rel="noreferrer">
+            Parkplatzplan als PDF
+          </a>
+          .
+        </p>
       </section>
       <div className="home-left">
         <section className="card">
