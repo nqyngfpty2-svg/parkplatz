@@ -20,14 +20,20 @@ async function main() {
     spots.push({ label, ownerCode });
   }
 
-  await prisma.parkingSpot.createMany({
-    data: spots.map((spot) => ({
-      label: spot.label,
-      ownerCodeHash: sha256(spot.ownerCode),
-      active: true
-    })),
-    skipDuplicates: true
-  });
+  for (const spot of spots) {
+    await prisma.parkingSpot.upsert({
+      where: { label: spot.label },
+      update: {
+        ownerCodeHash: sha256(spot.ownerCode),
+        active: true
+      },
+      create: {
+        label: spot.label,
+        ownerCodeHash: sha256(spot.ownerCode),
+        active: true
+      }
+    });
+  }
 }
 
 main()
