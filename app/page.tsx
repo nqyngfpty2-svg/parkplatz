@@ -25,20 +25,40 @@ export default async function Home({
     .map((release) => ({ id: release.spotId, label: release.spot.label }));
 
   return (
-    <div className="grid">
-      <section className="card">
-        <h2>Datum auswählen</h2>
-        <form method="get" className="grid two">
-          <label>
-            Datum
-            <input type="date" name="date" defaultValue={selectedDate} />
-          </label>
-          <button type="submit">Anzeigen</button>
-        </form>
+    <div className="grid home-layout">
+      <section className="card parking-plan-card">
+        <h2>Parkplatzplan</h2>
+        <p>
+          Lege die Datei <code>public/parking-plan.pdf</code> ab, damit der Plan hier angezeigt
+          wird.
+        </p>
+        <object
+          data="/parking-plan.pdf"
+          type="application/pdf"
+          className="parking-plan"
+          aria-label="Parkplatzplan als PDF"
+        >
+          <p>
+            PDF konnte nicht geladen werden. Bitte öffne den{" "}
+            <a href="/parking-plan.pdf">Parkplatzplan als PDF</a>.
+          </p>
+        </object>
       </section>
+      <div className="home-left">
+        <section className="card">
+          <h2>Datum auswählen</h2>
+          <form method="get" className="grid two">
+            <label>
+              Datum
+              <input type="date" name="date" defaultValue={selectedDate} />
+            </label>
+            <button type="submit">Anzeigen</button>
+          </form>
+        </section>
 
-      <BookingClient date={selectedDate} spots={availableSpots} />
-      <MyReservations />
+        <BookingClient date={selectedDate} spots={availableSpots} />
+        <MyReservations />
+      </div>
     </div>
   );
 }
