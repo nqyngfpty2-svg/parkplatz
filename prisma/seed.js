@@ -3,6 +3,7 @@
 }
 
 async function main() {
+
   for (let index = 1; index <= 60; index += 1) {
     const label = `P-${String(index).padStart(2, "0")}`;
     const ownerCode = generateOwnerCode(label);
