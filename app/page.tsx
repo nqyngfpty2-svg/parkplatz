@@ -28,13 +28,13 @@ export default async function Home({
     <div className="grid home-layout">
       <section className="card parking-plan-card">
         <h2>Parkplatzplan</h2>
-        <iframe
-          src="/parking-plan.pdf"
+        <img
+          src="/parking-plan.svg"
           className="parking-plan"
-          title="Parkplatzplan als PDF"
+          alt="Parkplatzplan als Grafik"
         />
         <p className="parking-plan-fallback">
-          PDF konnte nicht geladen werden. Bitte öffne den{" "}
+          Falls das Bild nicht angezeigt wird, öffne den{" "}
           <a href="/parking-plan.pdf" target="_blank" rel="noreferrer">
             Parkplatzplan als PDF
           </a>
